@@ -21,7 +21,7 @@ namespace Basic_DBL_test_class11
          
 
             Customer customer = new Customer();
-            customer.Name = "Tal";
+            customer.Name = "Tal1";
             customer.Email = "tal@gmail.com";
             customer.IsAdmin = false;
             int id = await customerDB.InsertAsync(customer, "1234");

@@ -23,11 +23,7 @@ namespace Basic_DBL_test_class11
             {
                 string pn = "@" + i;
                 InValue += pn + ',';
-
-                DbParameter p = cmd.CreateParameter();
-                p.ParameterName = pn;
-                p.Value = fields.Values.ElementAt(i);
-                cmd.Parameters.Add(p);
+                cmd.Parameters.AddWithValue(pn, fields.Values.ElementAt(i));
             }
             InValue = InValue.Remove(InValue.Length - 1);//remove last ,
             InValue += ")";

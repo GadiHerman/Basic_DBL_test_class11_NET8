@@ -13,7 +13,7 @@ namespace Basic_DBL_test_class11
 
         private const string MySqlConnSTR = @"server=localhost;
                                     user id=root;
-                                    password=1234;
+                                    password=<<password>>;
                                     persistsecurityinfo=True;
                                     database=mystore";
 
