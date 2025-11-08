@@ -28,8 +28,7 @@ namespace Basic_DBL_test_class11
 
             return customers;
         }
-
-        // כתוב פעולה להוספת לקוח חדש   
+  
         public async Task<int> InsertAsync(Customer customer, string CustomerPassword)
         {
             await conn.OpenAsync();
