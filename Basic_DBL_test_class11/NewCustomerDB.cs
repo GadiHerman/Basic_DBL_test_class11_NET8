@@ -8,10 +8,6 @@ namespace Basic_DBL_test_class11
 {
     public class NewCustomerDB : BaseDB<Customer>
     {
-        protected override string GetPrimaryKeyName()
-        {
-            return "CustomerID";
-        }
 
         protected override string GetTableName()
         {
@@ -26,6 +22,16 @@ namespace Basic_DBL_test_class11
             fields.Add("IsAdmin", customer.IsAdmin);
             fields.Add("CustomerPassword", CustomerPassword);
             return await InsertAsync(fields);
+        }
+
+        protected override Customer CreateModel(object[] row)
+        {
+            Customer c = new Customer();
+            c.Id = int.Parse(row[0].ToString());
+            c.Name = row[1].ToString();
+            c.Email = row[2].ToString();
+            c.IsAdmin = bool.Parse(row[4].ToString());
+            return c;
         }
     }
 }

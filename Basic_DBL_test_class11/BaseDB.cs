@@ -13,7 +13,8 @@ namespace Basic_DBL_test_class11
     public abstract class BaseDB<T> : DB
     {
         protected abstract string GetTableName();
-        protected abstract string GetPrimaryKeyName();
+
+        protected abstract T CreateModel(object[] row);
 
         protected async Task<int> InsertAsync(Dictionary<string, object> fields)
         {
@@ -35,6 +36,37 @@ namespace Basic_DBL_test_class11
             await cmd.ExecuteNonQueryAsync();
             await conn.CloseAsync();
             return 1;
+        }
+
+
+        public async Task<List<T>> SelectAllAsync()
+        {
+            List<T> list = new List<T>();
+            cmd.CommandText = $"SELECT * FROM {GetTableName()};";
+            if (conn.State != System.Data.ConnectionState.Open)
+                await conn.OpenAsync();
+            if (cmd.Connection.State != System.Data.ConnectionState.Open)
+                cmd.Connection = conn;
+
+            reader = (MySql.Data.MySqlClient.MySqlDataReader)await cmd.ExecuteReaderAsync();
+            var readOnlyData = await reader.GetColumnSchemaAsync();
+            int size = readOnlyData.Count;
+            object[] row;
+            while (reader.Read())
+            {
+                row = new object[size];
+                reader.GetValues(row);
+                T dto = CreateModel(row);
+                list.Add(dto);
+            }
+
+            if (reader != null && !reader.IsClosed)
+                await reader.CloseAsync();
+            cmd.Parameters.Clear();
+            if (conn.State == System.Data.ConnectionState.Open)
+                await conn.CloseAsync();
+
+            return list;
         }
     }
 }

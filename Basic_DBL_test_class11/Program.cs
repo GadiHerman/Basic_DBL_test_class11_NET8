@@ -26,6 +26,11 @@ namespace Basic_DBL_test_class11
             customer.IsAdmin = false;
             int id = await customerDB.InsertAsync(customer, "1234");
             Console.WriteLine(id);
+
+            List<Customer> list = await customerDB.SelectAllAsync();
+            for (int i = 0; i < list.Count; i++) {
+                Console.WriteLine($"Id: {list[i].Id}, Name: {list[i].Name}, Email: {list[i].Email}, IsAdmin: {list[i].IsAdmin}");
+            }   
         }
     }
 }
