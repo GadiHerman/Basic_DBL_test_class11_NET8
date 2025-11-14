@@ -6,49 +6,45 @@ using System.Threading.Tasks;
 
 namespace Basic_DBL_test_class11
 {
-    public class CustomerDB : DB
+    public class CustomerDB : BaseDB<Customer>
     {
-        public async Task<List<Customer>> SelectAllAsync()
+
+        protected override string GetPrimaryKeyName()
         {
-            List<Customer> customers = new List<Customer>();
-
-            await conn.OpenAsync();
-            cmd.CommandText = "SELECT CustomerID, Name, Email, IsAdmin FROM Customers";
-            reader = (MySql.Data.MySqlClient.MySqlDataReader)await cmd.ExecuteReaderAsync();
-            while (await reader.ReadAsync())
-            {
-                Customer customer = new Customer();
-                customer.Id = reader.GetInt32(0);
-                customer.Name = reader.GetString(1);
-                customer.Email = reader.GetString(2);
-                customer.IsAdmin = reader.GetBoolean(3);
-                customers.Add(customer);
-            }
-            await conn.CloseAsync();
-
-            return customers;
+            return "CustomerID";
         }
-  
+
+        protected override string GetTableName()
+        {
+            return "customers";
+        }
+        protected override Customer CreateModel(object[] row)
+        {
+            Customer c = new Customer();
+            c.Id = int.Parse(row[0].ToString());
+            c.Name = row[1].ToString();
+            c.Email = row[2].ToString();
+            c.IsAdmin = bool.Parse(row[4].ToString());
+            return c;
+        }
+
         public async Task<int> InsertAsync(Customer customer, string CustomerPassword)
         {
-            await conn.OpenAsync();
+            Dictionary<string, object> fields = new Dictionary<string, object>();
+            fields.Add("Name", customer.Name);
+            fields.Add("Email", customer.Email);
+            fields.Add("IsAdmin", customer.IsAdmin);
+            fields.Add("CustomerPassword", CustomerPassword);
+            return await InsertAsync(fields);
+        }
 
-            cmd.Parameters.Clear();
-            cmd.CommandText = "INSERT INTO Customers (Name, Email,CustomerPassword, IsAdmin) VALUES (@name, @email,@customerPassword, @isAdmin)";
-            cmd.Parameters.AddWithValue("@name", customer.Name);
-            cmd.Parameters.AddWithValue("@email", customer.Email);
-            cmd.Parameters.AddWithValue("@isAdmin", customer.IsAdmin);
-            cmd.Parameters.AddWithValue("@customerPassword", CustomerPassword);
-
-            await cmd.ExecuteNonQueryAsync();
-
-            cmd.CommandText = "SELECT LAST_INSERT_ID()";
-            object result = await cmd.ExecuteScalarAsync();
-            int newId = Convert.ToInt32(result);
-
-            await conn.CloseAsync();
-
-            return newId;
+        public async Task<int> UpdateAsync(Customer customer)
+        {
+            Dictionary<string, object> fields = new Dictionary<string, object>();
+            fields.Add("Name", customer.Name);
+            fields.Add("Email", customer.Email);
+            fields.Add("IsAdmin", customer.IsAdmin);
+            return await base.UpdateAsync(fields, customer.Id);
         }
     }
 }

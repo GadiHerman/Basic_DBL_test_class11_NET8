@@ -6,7 +6,7 @@ namespace Basic_DBL_test_class11
     {
         static async Task Main(string[] args)
         {
-            NewCustomerDB customerDB = new NewCustomerDB();
+            CustomerDB customerDB = new CustomerDB();
 
             Console.WriteLine("--- Inserting Customer ---");
             Customer customer = new Customer();
