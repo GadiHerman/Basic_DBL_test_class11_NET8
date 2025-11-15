@@ -27,7 +27,7 @@ namespace Basic_DBL_test_class11
                 InValue += pn + ',';
                 cmd.Parameters.AddWithValue(pn, fields.Values.ElementAt(i));
             }
-            InValue = InValue.Remove(InValue.Length - 1);//remove last ,
+            InValue = InValue.Remove(InValue.Length - 1);   //remove last ,
             InValue += ")";
 
             string sqlCommand = $"INSERT INTO {GetTableName()}  {InKey} {InValue};";
@@ -48,8 +48,6 @@ namespace Basic_DBL_test_class11
                 await conn.OpenAsync();
 
             reader = (MySql.Data.MySqlClient.MySqlDataReader)await cmd.ExecuteReaderAsync();
-            //var readOnlyData = await reader.GetColumnSchemaAsync();
-            //int size = readOnlyData.Count;
             int size = reader.FieldCount;
             object[] row;
             while (await reader.ReadAsync())
